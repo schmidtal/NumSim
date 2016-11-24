@@ -60,7 +60,7 @@ Grid::Interpolate
 
   // std ::cout << (pos[0] - _offset[0]) / _geom->Mesh()[0] << ";" << (pos[1] - _offset[1])  / _geom->Mesh()[1]<< std::endl;
   // std::cout << xPosition << ";" << yPosition << std::endl;
-   Iterator asseccIterator( _geom, xPosition + ( _geom->Size()[0] ) * yPosition );
+   Iterator asseccIterator( _geom, xPosition + ( _geom->Size()[0] + 2) * yPosition );
    auto weightForX =  fmod( xPosition, _geom->Mesh()[0] ) /_geom->Mesh()[0];
    auto weightForY =  fmod( yPosition, _geom->Mesh()[1] ) / _geom->Mesh()[1];
    // std ::cout << asseccIterator << ";" << asseccIterator.Top() << std::endl;
@@ -272,17 +272,18 @@ Grid::DC_udv_x
    const Grid *u
 ) const
 {
-   real_t firstTerm =  0.25 *( ( u->Cell( it ) + u->Cell( it.Right() ) )
+   real_t firstTerm =  0.25 *( ( u->Cell( it ) + u->Cell( it.Top() ) )
                                * ( Cell( it ) + Cell( it.Right() ) )
-                             - ( u->Cell( it.Left() ) + u->Cell( it ) )
+                               - ( u->Cell( it.Left() ) + u->Cell( it.Top().Left() ) )
                                * ( Cell( it.Left() ) + Cell( it ) ) ) ;
 
    real_t secondTerm =  alpha
                       * 0.25
-                      * ( std::abs( u->Cell( it ) + u->Cell( it.Right() ) )
+                      * ( std::abs( u->Cell( it ) + u->Cell( it.Top() ) )
                         * ( Cell( it ) - Cell( it.Right() ) )
-                      - std::abs( u->Cell( it.Left() ) + u->Cell( it ) )
+                          - std::abs( u->Cell( it.Left() ) + u->Cell( it.Left().Top() ) )
                         * ( Cell( it.Left() ) - Cell( it ) )  );
+
    real_t r_DC_udv_x = 1.0/_geom->Mesh()[0] * firstTerm + 1.0/_geom->Mesh()[0] * secondTerm;
    return r_DC_udv_x;
 }
