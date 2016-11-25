@@ -24,8 +24,8 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 # set compiler
-set (CMAKE_CC_COMPILER "/usr/bin/gcc")
-set (CMAKE_CXX_COMPILER "/usr/bin/g++")
+set (CMAKE_CC_COMPILER "/usr/bin/mpicc")
+set (CMAKE_CXX_COMPILER "/usr/bin/mpic++")
 
 # set some good compiler flags
 set (GOOD_FLAGS "-Wall -Wextra -pedantic -O3 -std=c++11")
@@ -86,7 +86,9 @@ endif (DEBUG_VISU)
 
 # build executable and link libs against it
 add_executable (numsim ${SOURCES})
+add_executable (buschfunk ${CMAKE_CURRENT_SOURCE_DIR}/src/buschfunk.cpp)
 target_link_libraries (numsim ${SDL2_LIBRARIES} ${MPI_LIBRARIES})
+target_link_libraries (buschfunk ${SDL2_LIBRARIES} ${MPI_LIBRARIES})
 
 if (MPI_COMPILE_FLAGS)
   set_target_properties(numsim PROPERTIES
